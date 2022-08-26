@@ -1,11 +1,11 @@
 const std = @import("std");
-const microzig = @import("res/microzig/src/main.zig");
-const MemoryRegion = @import("res/microzig/src/modules/MemoryRegion.zig");
+const microzig = @import("microzig/src/main.zig");
+const MemoryRegion = @import("microzig/src/modules/MemoryRegion.zig");
 
 pub fn build(b: *std.build.Builder) void {
   const stm32f103xb = microzig.Chip {
     .name = "STM32F103xB",
-    .path = "res/microzig/src/modules/chips/stm32f103/stm32f103.zig",
+    .path = "microzig/src/modules/chips/stm32f103/stm32f103.zig",
     .cpu  = microzig.cpus.cortex_m3,
     .memory_regions = &.{
       MemoryRegion { .offset = 0x08000000, .length = 128 * 1024, .kind = .flash },
