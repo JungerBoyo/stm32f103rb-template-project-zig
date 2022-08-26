@@ -1,5 +1,5 @@
 # stm32f103rb-template-project-zig
-stm32f103rb mcu ziglang template project with microzig
+stm32f103rb mcu ziglang template project with microzig. To use you will need zig >=0.10.0 compiler, arm-none-eabi-objcopy, st-flash and st-util.
 
 ## Building 
 Build steps:
@@ -12,5 +12,4 @@ Steps:
 * switch build mode to `.Debug`
 * `run gdb` and `st-util`
 * (in gdb) `target extended:4242`
-* (in gdb) `file zig-out/bin/<project_name>.elf
-`
+* (in gdb) `file zig-out/bin/<project_name>.elf`
