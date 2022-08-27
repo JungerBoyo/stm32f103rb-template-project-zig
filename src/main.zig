@@ -2,7 +2,7 @@ const microzig = @import("microzig");
 const registers = microzig.chip.registers;
 
 pub fn delay(ticks: i32) void {
-  var i = ticks;
+  var i = @divExact(ticks, 5);
   while(i > 0) : (i -= 1) {
     asm volatile("nop");
   }

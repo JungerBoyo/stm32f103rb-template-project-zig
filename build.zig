@@ -13,43 +13,29 @@ pub fn build(b: *std.build.Builder) void {
     },
   };
 
-  var mem_buffer: [256]u8 = undefined;
-  const allocator = std.heap.FixedBufferAllocator.init(&mem_buffer).allocator();
-
   const project_name: []const u8 = "stm32f103rb-template-project-zig";
 
-  const exe_name = std.fmt.allocPrint(allocator, "{s}.elf", .{project_name}) catch "exe.elf";
   const exe = microzig.addEmbeddedExecutable(
     b,
-    exe_name, 
+    project_name ++ ".elf", 
     "src/main.zig",
     .{.chip = stm32f103xb,},
     .{},       
   );
-  exe.inner.setBuildMode(.ReleaseFast);
+  const mode = b.standardReleaseOptions();
+  exe.inner.setBuildMode(mode);
   exe.inner.install();
 
-  const exe_elf_path = std.fmt.allocPrint(allocator, "zig-out/bin/{s}.elf", .{project_name}) catch "zig-out/bin/exe.elf";
-  const exe_bin_path = std.fmt.allocPrint(allocator, "zig-out/bin/{s}.bin", .{project_name}) catch "zig-out/bin/exe.bin";
-  const convert_to_binary_cmd = b.addSystemCommand(&[_][]const u8{
-    "arm-none-eabi-objcopy", 
-    "-O", 
-    "binary", 
-    exe_elf_path,
-    exe_bin_path,
-  });
-  convert_to_binary_cmd.step.dependOn(b.getInstallStep());
-
-  var convert_to_binary_step = b.step("convert_to_binary", "converts compiled ELF file to binary file using objcopy");
-  convert_to_binary_step.dependOn(&convert_to_binary_cmd.step);
+  const exe_bin = b.addInstallRaw(exe.inner, project_name ++ ".bin", .{});
+  b.getInstallStep().dependOn(&exe_bin.step);
 
   const flash_cmd = b.addSystemCommand(&[_][]const u8{
     "st-flash", 
     "write", 
-    exe_bin_path,
+    b.getInstallPath(exe_bin.dest_dir, exe_bin.dest_filename),
     "0x08000000"
   });
-  flash_cmd.step.dependOn(convert_to_binary_step);
+  flash_cmd.step.dependOn(b.getInstallStep());
  
   const flash_step = b.step("flash", "flash binary into MCU");
   flash_step.dependOn(&flash_cmd.step);
