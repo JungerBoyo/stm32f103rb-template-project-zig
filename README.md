@@ -1,10 +1,9 @@
 # stm32f103rb-template-project-zig
-stm32f103rb mcu ziglang template project with microzig. To use you will need zig >=0.10.0 compiler, arm-none-eabi-objcopy, st-flash and st-util.
+stm32f103rb mcu ziglang template project with microzig. To use you will need zig >=0.10.0 compiler, st-flash and st-util.
 
 ## Building 
 Build steps:
-* Build to elf, run `zig build -fstage1 install.`
-* Convert elf to binary, run `zig build -fstage1 convert_to_binary`
+* Build to elf and binary, run `zig build -fstage1 install.`
 * Flash binary using st-flash tool, run `zig build -fstage1 flash`
 
 ## Debugging
